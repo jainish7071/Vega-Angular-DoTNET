@@ -1,0 +1,67 @@
+<h2>Vehicles</h2>
+<p *ngIf="auth.isAuthenticated$ | async">
+  <a [routerLink]="['/vehicle/new']" class="btn btn-primary">New Vehicle</a>
+</p>
+<div class="card bg-light">
+  <div class="form-group card-body">
+    <label for="make" class="card-title">Make</label>
+    <select
+      name="make"
+      id="make"
+      class="form-select form-control"
+      [(ngModel)]="query.makeId"
+      (change)="onMakeChange()"
+    >
+      <option value=""></option>
+      <option *ngFor="let m of makes" [value]="m.id">{{ m.name }}</option>
+    </select>
+    <label for="make" class="card-title">Model</label>
+    <select
+      name="make"
+      id="make"
+      class="form-select form-control"
+      [(ngModel)]="query.modelId"
+      (change)="onModelChange()"
+    >
+      <option value=""></option>
+      <option *ngFor="let m of models" [value]="m.id">{{ m.name }}</option>
+    </select>
+    <button class="btn btn-secondary my-2" (click)="resetFilter()">
+      Reset
+    </button>
+  </div>
+</div>
+<table class="table">
+  <thead>
+    <tr>
+      <th *ngFor="let c of columns">
+        <div *ngIf="c.isSortable" (click)="sortBy(c.key)">
+          {{ c.title }}
+          <i
+            *ngIf="query.sortBy === c.key"
+            class="fa"
+            [class.fa-sort-asc]="query.isSortAscending"
+            [class.fa-sort-desc]="!query.isSortAscending"
+          ></i>
+        </div>
+        <div *ngIf="!c.isSortable">
+          {{ c.title }}
+        </div>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let vehicle of queryResult.items">
+      <td>{{ vehicle.id }}</td>
+      <td>{{ vehicle.make.name }}</td>
+      <td>{{ vehicle.model.name }}</td>
+      <td>{{ vehicle.contact.name }}</td>
+      <td><a [routerLink]="['/vehicles/', vehicle.id]">View</a></td>
+    </tr>
+  </tbody>
+</table>
+<pagination
+  [total-items]="queryResult.totalItems"
+  [page-size]="query.pageSize"
+  (page-changed)="onPageChange($event)"
+></pagination>

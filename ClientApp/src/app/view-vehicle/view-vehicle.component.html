@@ -1,0 +1,127 @@
+<h1>Vehicle</h1>
+<div>
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link active"
+        id="basic-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#basic"
+        type="button"
+        role="tab"
+        aria-controls="basic"
+        aria-selected="true"
+      >
+        Vehicle
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        id="photos-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#photos"
+        type="button"
+        role="tab"
+        aria-controls="photos"
+        aria-selected="false"
+      >
+        Photos
+      </button>
+    </li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content" *ngIf="vehicle">
+    <!-- Vehicle tab -->
+    <div
+      role="tabpanel"
+      class="tab-pane fade show active"
+      id="basic"
+      aria-labelledby="basic-tab"
+    >
+      <h2>Basics</h2>
+      <ul>
+        <li>Make: {{ vehicle.make.name }}</li>
+        <li>Model: {{ vehicle.model.name }}</li>
+        <li>Registered: {{ vehicle.isRegistered ? "Yes" : "No" }}</li>
+      </ul>
+
+      <h2>Features</h2>
+      <ul>
+        <li *ngFor="let f of vehicle.features">{{ f.name }}</li>
+      </ul>
+      <h2>Contact</h2>
+      <ul>
+        <li>Contact Name: {{ vehicle.contact.name }}</li>
+        <li>Contact Phone: {{ vehicle.contact.phone }}</li>
+        <li>Contact Email: {{ vehicle.contact.email }}</li>
+      </ul>
+      <br />
+      <p>
+        <a
+          *ngIf="auth.isAuthenticated$ | async"
+          class="btn btn-primary mx-2"
+          [routerLink]="['/vehicles/edit/', vehicle.id]"
+          >Edit</a
+        >
+        <button
+          *ngIf="auth.isAuthenticated$ | async"
+          class="btn btn-danger mx-2"
+          (click)="delete()"
+        >
+          Delete
+        </button>
+        <a class="btn btn-secondary mx-2" [routerLink]="['/vehicles']"
+          >View All Vehicles</a
+        >
+      </p>
+    </div>
+    <!-- Photos tab -->
+    <div
+      role="tabpanel"
+      class="tab-pane fade"
+      id="photos"
+      aria-labelledby="photos-tab"
+    >
+      <h2>Photos</h2>
+      <input
+        *ngIf="auth.isAuthenticated$ | async"
+        class="my-2"
+        type="file"
+        (change)="uploadPhoto()"
+        #fileInput
+      />
+      <div class="progress" *ngIf="progress && progress.percentage < 100">
+        <div
+          class="progress-bar progress-bar-striped"
+          role="progressbar"
+          [style.width]="progress.percentage + '%'"
+        >
+          <span class="sr-only"> {{ progress.percentage }}% Complete</span>
+        </div>
+      </div>
+      <div class="my-2 row row-cols-2">
+        <img
+          class="col"
+          *ngFor="let photo of photos"
+          src="/uploads/{{ photo.fileName }}"
+          class="img-thumbnail"
+          alt=""
+        />
+      </div>
+
+      <!-- <div class="progress" *ngIf="progress && progress.percentage < 100">
+        <div class="progress-bar" [style.width]="progress.percentage + '%'">
+          <span class="sr-only">{{ progress.percentage }}% Complete</span>
+        </div>
+      </div> -->
+      <!-- <img
+        *ngFor="let photo of photos"
+        src="/uploads/{{ photo.fileName }}"
+        class="img-thumbnail"
+      /> -->
+    </div>
+  </div>
+</div>
